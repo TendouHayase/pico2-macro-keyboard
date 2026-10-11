@@ -1,23 +1,25 @@
 [package]
-name = "app-embassy"
+name = "pico2-macro-keyboard"
 version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
-embassy-executor.workspace = true
-embassy-time.workspace = true
-embassy-rp.workspace = true
-embassy-usb.workspace = true
-cortex-m.workspace = true
-cortex-m-rt.workspace = true
+keypad = { workspace = true, features = ["defmt"] }
+
+embassy-rp = { workspace = true, features = [
+    "rp235xa", "time-driver", "critical-section-impl",
+    "unstable-pac", "binary-info", "defmt",
+] }
+embassy-executor = { workspace = true, features = [
+    "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt",
+] }
+embassy-time = { workspace = true, features = ["defmt", "defmt-timestamp-uptime"] }
+embassy-sync = { workspace = true, features = ["defmt"] }
+embassy-usb  = { workspace = true, features = ["defmt"] }
+
+static_cell.workspace = true
 defmt.workspace = true
 defmt-rtt.workspace = true
-panic-probe.workspace = true
-static_cell.workspace = true
-
-
-[[bin]]
-name = "app-embassy"
-test = false
-bench = false
-
+panic-probe = { workspace = true, features = ["print-defmt"] }
+cortex-m.workspace = true
+cortex-m-rt.workspace = true

@@ -1,0 +1,9 @@
+[package]
+name = "rp2350-drivers"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+embedded-hal.workspace = true
+embedded-hal-async.workspace = true
+embassy-usb-driver.workspace = true
