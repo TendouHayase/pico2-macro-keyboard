@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["firmware", "drivers/rp2350-drivers"]
+members = ["firmware", "drivers"]
 
 [workspace.package]
 edition = "2024"

@@ -1,3 +1,5 @@
+use crate::constant::{GCD_1G, GCD_1K, GCD_1M, TICK_HZ};
+
 pub struct Instant {
     ticks: u64,
 }
@@ -7,7 +9,9 @@ static mut GLOBAL_TICK: Instant = Instant { ticks: 0 };
 impl Instant {
     #[inline]
     pub const fn now() -> Instant {
-        Instant { ticks: GLOBAL_TICK }
+        Instant {
+            ticks: unsafe { GLOBAL_TICK.ticks },
+        }
     }
 
     pub const fn from_ticks(ticks: u64) -> Self {
