@@ -4,18 +4,28 @@ version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
-keypad = { workspace = true, features = ["defmt"] }
+# keypad = { workspace = true, features = ["defmt"] }
 
 embassy-rp = { workspace = true, features = [
-    "rp235xa", "time-driver", "critical-section-impl",
-    "unstable-pac", "binary-info", "defmt",
+    "rp235xa",
+    "time-driver",
+    "critical-section-impl",
+    "unstable-pac",
+    "binary-info",
+    "defmt",
 ] }
 embassy-executor = { workspace = true, features = [
-    "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt",
+    "platform-cortex-m",
+    "executor-thread",
+    "executor-interrupt",
+    "defmt",
 ] }
-embassy-time = { workspace = true, features = ["defmt", "defmt-timestamp-uptime"] }
+embassy-time = { workspace = true, features = [
+    "defmt",
+    "defmt-timestamp-uptime",
+] }
 embassy-sync = { workspace = true, features = ["defmt"] }
-embassy-usb  = { workspace = true, features = ["defmt"] }
+embassy-usb = { workspace = true, features = ["defmt"] }
 
 static_cell.workspace = true
 defmt.workspace = true
