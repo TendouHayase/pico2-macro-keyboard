@@ -7,6 +7,9 @@ pub struct Instant {
 static mut GLOBAL_TICK: Instant = Instant { ticks: 0 };
 
 impl Instant {
+    pub const MIN: Instant = Instant { ticks: u64::MIN };
+    pub const MAX: Instant = Instant { ticks: u64::MAX };
+
     #[inline]
     pub const fn now() -> Instant {
         Instant {
