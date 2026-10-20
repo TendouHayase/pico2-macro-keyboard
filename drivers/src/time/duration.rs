@@ -1,4 +1,7 @@
-use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use core::{
+    fmt,
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign},
+};
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Duration(pub u64);
@@ -93,6 +96,6 @@ impl DivAssign<u32> for Duration {
 
 impl<'a> fmt::Display for Duration {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ticks", self.ticks)
+        write!(f, "{} ticks", self.0)
     }
 }
