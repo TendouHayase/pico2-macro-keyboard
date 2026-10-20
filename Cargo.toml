@@ -40,8 +40,6 @@ static_cell = "2"
 defmt = "1"
 defmt-rtt = "1"
 
-
-keypad = { path = "crates/keypad" }
 rp2350-drivers = { path = "drivers/rp2350-drivers" }
 
 [profile.dev]
