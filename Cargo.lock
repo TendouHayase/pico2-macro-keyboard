@@ -1262,6 +1262,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rp2350-drivers"
+version = "0.1.0"
+dependencies = [
+ "embassy-usb-driver",
+ "embedded-hal 1.0.0",
+ "embedded-hal-async",
+]
+
+[[package]]
 name = "rustc_version"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
