@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["firmware", "drivers"]
+members = ["firmware", "drivers", "interface"]
 
 [workspace.package]
 edition = "2024"
