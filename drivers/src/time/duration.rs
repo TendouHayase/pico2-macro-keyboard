@@ -84,7 +84,7 @@ impl Div<u32> for Duration {
 impl Div<Duration> for u32 {
     type Output = Duration;
     fn div(self, rhs: Duration) -> Self::Output {
-        rhs * self
+        rhs / self
     }
 }
 
@@ -94,7 +94,7 @@ impl DivAssign<u32> for Duration {
     }
 }
 
-impl<'a> fmt::Display for Duration {
+impl fmt::Display for Duration {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} ticks", self.0)
     }
