@@ -1,6 +1,7 @@
-pub trait Output {
+use crate::ErrorType;
+
+pub trait Output: ErrorType {
     type Item;
-    type Error: core::fmt::Debug;
 
     /// Sends the full set of currently pressed keys to the host.
     ///
@@ -11,8 +12,8 @@ pub trait Output {
     ///
     /// # Errors
     ///
-    /// - Returnsi `Err` immediately, without waiting, if the host is not
-    ///   connected.
+    /// - [`ErrorKind::NotConnected`](crate::ErrorKind::NotConnected):
+    ///   returned immediately, without waiting, if the host is not connected.
     fn send_report(
         &mut self,
         pressed: &[Self::Item],
