@@ -1,6 +1,7 @@
 [workspace]
 resolver = "3"
-members = ["firmware", "drivers", "interface"]
+members = ["crates/*"]
+exclude = ["drivers", "firmware"]
 
 [workspace.package]
 edition = "2024"
@@ -40,7 +41,7 @@ static_cell = "2"
 defmt = "1"
 defmt-rtt = "1"
 
-rp2350-drivers = { path = "drivers/rp2350-drivers" }
+drivers = { path = "drivers" }
 
 [profile.dev]
 opt-level = 1

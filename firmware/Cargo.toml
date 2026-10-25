@@ -1,10 +1,16 @@
 [package]
-name = "pico2-macro-keyboard"
+name = "firmware"
 version = "0.1.0"
 edition.workspace = true
 
+[[bin]]
+name = "pico2-macro-keyboard"
+test = false
+bench = false
+
 [dependencies]
-# keypad = { workspace = true, features = ["defmt"] }
+interface = { path = "../crates/interface" }
+drivers = { path = "../drivers" }
 
 embassy-rp = { workspace = true, features = [
     "rp235xa",

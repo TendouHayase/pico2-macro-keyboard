@@ -3,7 +3,14 @@ name = "rp2350-drivers"
 version = "0.1.0"
 edition.workspace = true
 
+[lib]
+test = false
+bench = false
+doctest = false
+
 [dependencies]
+interface = { path = "../crates/interface" }
+
 embedded-hal.workspace = true
 embedded-hal-async.workspace = true
 embassy-usb-driver.workspace = true
