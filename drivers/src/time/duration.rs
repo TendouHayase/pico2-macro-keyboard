@@ -8,19 +8,19 @@ pub struct Duration(pub u64);
 
 impl Duration {
     pub fn checked_add(self, rhs: Duration) -> Option<Duration> {
-        self.0.checked_add(rhs.0).map(|ticks| Duration(ticks))
+        self.0.checked_add(rhs.0).map(Duration)
     }
 
     pub fn checked_sub(self, rhs: Duration) -> Option<Duration> {
-        self.0.checked_sub(rhs.0).map(|ticks| Duration(ticks))
+        self.0.checked_sub(rhs.0).map(Duration)
     }
 
     pub fn checked_mul(self, rhs: u32) -> Option<Duration> {
-        self.0.checked_mul(rhs as _).map(|ticks| Duration(ticks))
+        self.0.checked_mul(rhs as _).map(Duration)
     }
 
     pub fn checked_div(self, rhs: u32) -> Option<Duration> {
-        self.0.checked_div(rhs as _).map(|ticks| Duration(ticks))
+        self.0.checked_div(rhs as _).map(Duration)
     }
 }
 
