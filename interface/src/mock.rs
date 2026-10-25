@@ -2,7 +2,7 @@ extern crate alloc;
 
 use alloc::collections::VecDeque;
 
-use crate::{io::Input, io::KeyEvent};
+use crate::{event::Event, io::Input};
 
 /// This is the input for rotating the pre-inserted events in order.
 ///
@@ -10,11 +10,11 @@ use crate::{io::Input, io::KeyEvent};
 /// When the event is exhausted, `next_event` will never complete.
 /// The test should determine when to terminate by checking `is_empty`.
 pub struct MockInput {
-    events: VecDeque<KeyEvent>,
+    events: VecDeque<Event>,
 }
 
 impl MockInput {
-    pub fn new(events: impl IntoIterator<Item = KeyEvent>) -> Self {
+    pub fn new(events: impl IntoIterator<Item = Event>) -> Self {
         Self {
             events: events.into_iter().collect(),
         }
@@ -27,7 +27,7 @@ impl MockInput {
 }
 
 impl Input for MockInput {
-    async fn next_event(&mut self) -> KeyEvent {
+    async fn next_event(&mut self) -> Event {
         match self.events.pop_front() {
             Some(event) => event,
             None => core::future::pending().await,
