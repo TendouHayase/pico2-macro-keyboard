@@ -1,41 +1,43 @@
 [package]
 name = "firmware"
 version = "0.1.0"
-edition.workspace = true
+edition = "2024"
 
 [[bin]]
 name = "pico2-macro-keyboard"
+path = "src/main.rs"
 test = false
 bench = false
 
 [dependencies]
 interface = { path = "../crates/interface" }
-drivers = { path = "../drivers" }
+rp2350-drivers = { path = "../drivers" }
 
-embassy-rp = { workspace = true, features = [
+embassy-rp = { version = "0.10.0", features = [
+    "defmt",
     "rp235xa",
-    "time-driver",
     "critical-section-impl",
     "unstable-pac",
+    "time-driver",
     "binary-info",
-    "defmt",
 ] }
-embassy-executor = { workspace = true, features = [
+embassy-executor = { version = "0.10.0", features = [
     "platform-cortex-m",
     "executor-thread",
     "executor-interrupt",
     "defmt",
 ] }
-embassy-time = { workspace = true, features = [
+embassy-time = { version = "0.5", features = [
     "defmt",
     "defmt-timestamp-uptime",
 ] }
-embassy-sync = { workspace = true, features = ["defmt"] }
-embassy-usb = { workspace = true, features = ["defmt"] }
+embassy-usb = { version = "0.6", features = ["defmt"] }
+embassy-sync = { version = "0.8.0", features = ["defmt"] }
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
 
-static_cell.workspace = true
-defmt.workspace = true
-defmt-rtt.workspace = true
-panic-probe = { workspace = true, features = ["print-defmt"] }
-cortex-m.workspace = true
-cortex-m-rt.workspace = true
+cortex-m = "0.7.9"
+cortex-m-rt = "0.7.7"
+
+static_cell = "2"
+defmt = "1"
+defmt-rtt = "1"
