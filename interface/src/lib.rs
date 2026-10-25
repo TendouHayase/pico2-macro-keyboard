@@ -3,3 +3,6 @@
 pub mod io;
 pub mod key;
 pub mod key_map;
+
+#[cfg(feature = "mock")]
+pub mod mock;
