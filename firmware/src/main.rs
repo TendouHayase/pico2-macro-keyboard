@@ -1,9 +1,6 @@
 #![no_std]
 #![no_main]
 
-pub mod constants;
-pub mod debounce;
-
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_rp::{
