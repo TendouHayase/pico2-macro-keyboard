@@ -1,10 +1,13 @@
-use crate::key::KeyNumber;
+use crate::{
+    event::Event,
+    key::{KeyNumber, KeyState},
+};
 
 pub trait Input {
-    fn next_event(&mut self) -> impl Future<Output = KeyEvent>;
+    fn next_event(&mut self) -> impl Future<Output = Event>;
 }
 
 pub struct KeyEvent {
     pub key: KeyNumber,
-    pub pressed: bool,
+    pub status: KeyState,
 }
