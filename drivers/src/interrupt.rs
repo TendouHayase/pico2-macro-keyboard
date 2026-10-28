@@ -1,2 +1,5 @@
-pub mod irq;
-pub mod table;
+mod irq;
+mod table;
+
+pub use irq::*;
+pub use table::*;
