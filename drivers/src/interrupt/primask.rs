@@ -1,16 +1,34 @@
-/// # Safety
-///
-/// Do not call this function if disable is not called
-#[inline]
-pub unsafe fn enable() {
-    unsafe {
-        core::arch::asm!("cpsie i", options(nostack, preserves_flags));
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub enum Primask {
+    Active,
+    Inactive,
+}
+
+impl Primask {
+    pub fn is_active(&self) -> bool {
+        *self == Primask::Active
     }
 }
 
 #[inline]
-pub fn disable() {
+pub(super) fn read() -> Primask {
     unsafe {
-        core::arch::asm!("cpsid i", options(nostack, preserves_flags));
+        let r: u32;
+        core::arch::asm!("mrs {}, PRIMASK",  out(reg) r);
+        if r & (1 << 0) == (1 << 0) {
+            Primask::Inactive
+        } else {
+            Primask::Active
+        }
+    }
+}
+
+#[inline]
+pub(super) fn write(primask: Primask) {
+    unsafe {
+        match primask {
+            Primask::Inactive => core::arch::asm!("msr PRIMASK, r1", in("r1") 0x01),
+            Primask::Active => core::arch::asm!("msr PRIMASK, r1", in("r1") 0x00),
+        }
     }
 }
