@@ -11,7 +11,7 @@ impl Primask {
 }
 
 #[inline]
-pub(super) fn read() -> Primask {
+pub(crate) fn read() -> Primask {
     unsafe {
         let r: u32;
         core::arch::asm!("mrs {}, PRIMASK",  out(reg) r);
@@ -24,7 +24,7 @@ pub(super) fn read() -> Primask {
 }
 
 #[inline]
-pub(super) fn write(primask: Primask) {
+pub(crate) fn write(primask: Primask) {
     unsafe {
         match primask {
             Primask::Inactive => core::arch::asm!("msr PRIMASK, r1", in("r1") 0x01),
