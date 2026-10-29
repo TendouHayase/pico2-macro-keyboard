@@ -1,6 +1,5 @@
 mod critical;
 mod irq;
-mod primask;
 mod table;
 
 pub use critical::*;

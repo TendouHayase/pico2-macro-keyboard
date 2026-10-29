@@ -56,3 +56,23 @@ impl IrqHandlerTable {
 // `execute` forbid calls from NMI/HardFault handlers and from core 1, and exclude
 // same-slot re-entrancy.
 unsafe impl Sync for IrqHandlerTable {}
+
+/// Common entry point for every IRQ vector entry.
+///
+/// # Safety
+/// Must only be invoked by hardware as an IRQ vector entry (exception number 16 or
+/// above) on core 0. It must never be called directly from software.
+#[unsafe(no_mangle)]
+unsafe extern "C" fn dispatch() {
+    let ipsr = crate::register::ipsr::read();
+
+    let Some(irq) = ipsr
+        .checked_sub(16)
+        .and_then(|n| u8::try_from(n).ok())
+        .and_then(|n| Irq::try_from(n).ok())
+    else {
+        panic!("dispatch: invoked outside an IRQ vector entry");
+    };
+
+    unsafe { IRQ_HANDLER_TABLE.execute(irq) };
+}

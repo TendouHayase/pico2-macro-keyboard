@@ -1,3 +1,5 @@
+use interface::{Error, ErrorKind};
+
 pub const IRQ_COUNT: usize = 52;
 
 #[repr(u8)]
@@ -107,4 +109,76 @@ pub enum Irq {
     SpareIrq4 = 50,
     /// `SPARE_IRQ_5`
     SpareIrq5 = 51,
+}
+
+impl TryFrom<u8> for Irq {
+    type Error = InvalidIrq;
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Irq::Timer0Irq0),
+            1 => Ok(Irq::Timer0Irq1),
+            2 => Ok(Irq::Timer0Irq2),
+            3 => Ok(Irq::Timer0Irq3),
+            4 => Ok(Irq::Timer1Irq0),
+            5 => Ok(Irq::Timer1Irq1),
+            6 => Ok(Irq::Timer1Irq2),
+            7 => Ok(Irq::Timer1Irq3),
+            8 => Ok(Irq::PwmIrqWrap0),
+            9 => Ok(Irq::PwmIrqWrap1),
+            10 => Ok(Irq::DmaIrq0),
+            11 => Ok(Irq::DmaIrq1),
+            12 => Ok(Irq::DmaIrq2),
+            13 => Ok(Irq::DmaIrq3),
+            14 => Ok(Irq::UsbctrlIrq),
+            15 => Ok(Irq::Pio0Irq0),
+            16 => Ok(Irq::Pio0Irq1),
+            17 => Ok(Irq::Pio1Irq0),
+            18 => Ok(Irq::Pio1Irq1),
+            19 => Ok(Irq::Pio2Irq0),
+            20 => Ok(Irq::Pio2Irq1),
+            21 => Ok(Irq::IoIrqBank0),
+            22 => Ok(Irq::IoIrqBank0Ns),
+            23 => Ok(Irq::IoIrqQspi),
+            24 => Ok(Irq::IoIrqQspiNs),
+            25 => Ok(Irq::SioIrqFifo),
+            26 => Ok(Irq::SioIrqBell),
+            27 => Ok(Irq::SioIrqFifoNs),
+            28 => Ok(Irq::SioIrqBellNs),
+            29 => Ok(Irq::SioIrqMtimecmp),
+            30 => Ok(Irq::ClocksIrq),
+            31 => Ok(Irq::Spi0Irq),
+            32 => Ok(Irq::Spi1Irq),
+            33 => Ok(Irq::Uart0Irq),
+            34 => Ok(Irq::Uart1Irq),
+            35 => Ok(Irq::AdcIrqFifo),
+            36 => Ok(Irq::I2c0Irq),
+            37 => Ok(Irq::I2c1Irq),
+            38 => Ok(Irq::OtpIrq),
+            39 => Ok(Irq::TrngIrq),
+            40 => Ok(Irq::Proc0IrqCti),
+            41 => Ok(Irq::Proc1IrqCti),
+            42 => Ok(Irq::PllSysIrq),
+            43 => Ok(Irq::PllUsbIrq),
+            44 => Ok(Irq::PowmanIrqPow),
+            45 => Ok(Irq::PowmanIrqTimer),
+            46 => Ok(Irq::SpareIrq0),
+            47 => Ok(Irq::SpareIrq1),
+            48 => Ok(Irq::SpareIrq2),
+            49 => Ok(Irq::SpareIrq3),
+            50 => Ok(Irq::SpareIrq4),
+            51 => Ok(Irq::SpareIrq5),
+            invalid => Err(InvalidIrq(invalid)),
+        }
+    }
+}
+
+/// The value is not a valid RP2350 IRQ number.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub struct InvalidIrq(pub u8);
+
+impl Error for InvalidIrq {
+    fn kind(&self) -> ErrorKind {
+        ErrorKind::Other
+    }
 }
