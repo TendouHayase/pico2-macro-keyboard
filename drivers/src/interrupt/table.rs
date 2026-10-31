@@ -2,10 +2,15 @@ use core::cell::UnsafeCell;
 
 use crate::interrupt::irq::{IRQ_COUNT, Irq};
 
+/// Handler table indexed by IRQ number, with one slot per [`Irq`].
+///
+/// Every access to a slot happens inside a critical section. Only core 0 is
+/// supported.
 pub struct IrqHandlerTable {
-    table: UnsafeCell<[Option<&'static mut (dyn FnMut() + Send)>; IRQ_COUNT]>,
+    table: UnsafeCell<[Option<fn()>; IRQ_COUNT]>,
 }
 
+/// The single table consulted by [`dispatch`].
 pub static IRQ_HANDLER_TABLE: IrqHandlerTable = IrqHandlerTable::new();
 
 impl IrqHandlerTable {
@@ -15,57 +20,66 @@ impl IrqHandlerTable {
         }
     }
 
-    /// # Safety
-    /// - Must not be called for `irq` while the handler registered for `irq` is executing
-    ///   (e.g. from within that handler via [`Self::execute`]).
-    /// - Must not be called from an NMI or HardFault handler, or from core 1.
-    pub unsafe fn insert(
-        &self,
-        irq: Irq,
-        handler: &'static mut (dyn FnMut() + Send),
-    ) -> Option<&'static mut (dyn FnMut() + Send)> {
-        super::free(move || unsafe { (*self.table.get())[irq as usize].replace(handler) })
-    }
-
-    /// # Safety
-    /// - Must not be called for `irq` while the handler registered for `irq` is executing
-    ///   (e.g. from within that handler via [`Self::execute`]).
-    /// - Must not be called from an NMI or HardFault handler, or from core 1.
-    pub unsafe fn remove(&self, irq: Irq) -> Option<&'static mut (dyn FnMut() + Send)> {
-        super::free(|| unsafe { (*self.table.get())[irq as usize].take() })
-    }
-
-    /// Runs the handler registered for `irq` with interrupts masked; handlers are not
-    /// preemptible by other interrupts.
+    /// Registers `handler` for `irq` and returns the previously registered handler.
+    ///
+    /// May be called from any handler, including the one registered for `irq`.
     ///
     /// # Safety
-    /// - Must not be called for `irq` while the handler for `irq` is already executing
-    ///   (e.g. re-entrantly from within that handler).
-    /// - Must not be called from an NMI or HardFault handler, or from core 1.
+    /// - Must not be called from an NMI or HardFault handler, which can preempt code
+    ///   even inside a critical section.
+    /// - Must only be called on core 0. The critical section masks only the current
+    ///   core.
+    pub unsafe fn insert(&self, irq: Irq, handler: fn()) -> Option<fn()> {
+        unsafe { super::free(|| (*self.table.get())[irq as usize].replace(handler)) }
+    }
+
+    /// Unregisters the handler for `irq` and returns it.
+    ///
+    /// # Safety
+    /// Same requirements as [`Self::insert`].
+    pub unsafe fn remove(&self, irq: Irq) -> Option<fn()> {
+        unsafe { super::free(|| (*self.table.get())[irq as usize].take()) }
+    }
+
+    /// Calls the handler registered for `irq`, if any, with interrupts masked.
+    ///
+    /// The handler cannot be preempted by other IRQs, so NVIC priorities do not
+    /// apply between handlers, and a long-running handler delays every other IRQ.
+    /// The handler pointer is copied out of the slot before the call, so the handler
+    /// may call [`Self::insert`] or [`Self::remove`].
+    ///
+    /// # Safety
+    /// Same requirements as [`Self::insert`].
     pub unsafe fn execute(&self, irq: Irq) {
-        super::free(|| unsafe {
-            if let Some(ref mut closure) = (*self.table.get())[irq as usize] {
-                closure();
-            }
-        })
+        unsafe {
+            super::free(|| {
+                if let Some(func) = (*self.table.get())[irq as usize] {
+                    func();
+                }
+            })
+        }
     }
 }
 
-// SAFETY: Every access to the inner `UnsafeCell` occurs inside `free`, which masks
-// preemption on the current core. The safety contracts of `insert`, `remove`, and
-// `execute` forbid calls from NMI/HardFault handlers and from core 1, and exclude
-// same-slot re-entrancy.
+// SAFETY: Every access to the inner `UnsafeCell` happens inside `free`, which masks
+// interrupts on the current core, so accesses never overlap on core 0. The safety
+// contracts forbid calls from NMI/HardFault handlers, which `free` cannot mask, and
+// from core 1, which `free` does not affect.
 unsafe impl Sync for IrqHandlerTable {}
 
-/// Common entry point for every IRQ vector entry.
+/// Common handler installed in every IRQ entry of the vector table.
+///
+/// Reads the active exception number from IPSR, converts it to an [`Irq`], and runs
+/// the handler registered for it. Panics if the number is not a known IRQ.
 ///
 /// # Safety
-/// Must only be invoked by hardware as an IRQ vector entry (exception number 16 or
-/// above) on core 0. It must never be called directly from software.
+/// Must only be entered by hardware through an IRQ vector entry (exception number
+/// 16 or above) on core 0. Never call it directly from software.
 #[unsafe(no_mangle)]
 unsafe extern "C" fn dispatch() {
     let ipsr = crate::register::ipsr::read();
 
+    // IRQ n is exception number 16 + n.
     let Some(irq) = ipsr
         .checked_sub(16)
         .and_then(|n| u8::try_from(n).ok())
