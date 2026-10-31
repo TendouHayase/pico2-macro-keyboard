@@ -9,7 +9,7 @@ bench = false
 doctest = false
 
 [dependencies]
-interface = { path = "../crates/interface" }
+interface = { path = "../../crates/interface" }
 embedded-hal = "1.0"
 embedded-hal-async = "1.0"
 

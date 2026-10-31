@@ -10,7 +10,7 @@ test = false
 bench = false
 
 [dependencies]
-interface = { path = "../crates/interface" }
+interface = { path = "../../crates/interface" }
 rp2350-drivers = { path = "../drivers" }
 
 embassy-rp = { version = "0.10.0", features = [
