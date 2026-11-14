@@ -5,8 +5,8 @@ fn main() {
     let out = PathBuf::from(var_os("OUT_DIR").unwrap());
     println!("cargo:rustc-link-search={}", out.display());
 
-    let memory_x = include_bytes!("memory.x");
-    let mut f = File::create(out.join("memory.x")).unwrap();
+    let memory_x = include_bytes!("link.x");
+    let mut f = File::create(out.join("link.x")).unwrap();
     f.write_all(memory_x).unwrap();
     println!("cargo:rerun-if-changed=memory.x");
 

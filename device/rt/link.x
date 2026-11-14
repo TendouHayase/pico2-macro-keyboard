@@ -9,6 +9,13 @@ MEMORY {
 }
 
 SECTIONS {
+    .vector_table : ALIGH(4) {
+        __start_vector_table = .;
+        KEEP(*(.vector_table));
+    } > FLASH
+}
+
+SECTIONS {
     .start_block : ALIGN(4) {
         __start_block_addr = .;
         KEEP(*(_start_block));
