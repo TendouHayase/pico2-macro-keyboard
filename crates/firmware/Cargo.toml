@@ -11,3 +11,4 @@ bench = false
 
 [dependencies]
 rp2350-drivers = { path = "../drivers" }
+rp2350-rt = { path = "../rt" }

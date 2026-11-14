@@ -7,6 +7,7 @@ name = "firmware"
 version = "0.1.0"
 dependencies = [
  "rp2350-drivers",
+ "rp2350-rt",
 ]
 
 [[package]]
