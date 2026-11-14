@@ -12,32 +12,3 @@ bench = false
 [dependencies]
 interface = { path = "../../crates/interface" }
 rp2350-drivers = { path = "../drivers" }
-
-embassy-rp = { version = "0.10.0", features = [
-    "defmt",
-    "rp235xa",
-    "critical-section-impl",
-    "unstable-pac",
-    "time-driver",
-    "binary-info",
-] }
-embassy-executor = { version = "0.10.0", features = [
-    "platform-cortex-m",
-    "executor-thread",
-    "executor-interrupt",
-    "defmt",
-] }
-embassy-time = { version = "0.5", features = [
-    "defmt",
-    "defmt-timestamp-uptime",
-] }
-embassy-usb = { version = "0.6", features = ["defmt"] }
-embassy-sync = { version = "0.8.0", features = ["defmt"] }
-panic-probe = { version = "1.0.0", features = ["print-defmt"] }
-
-cortex-m = "0.7.9"
-cortex-m-rt = "0.7.7"
-
-static_cell = "2"
-defmt = "1"
-defmt-rtt = "1"

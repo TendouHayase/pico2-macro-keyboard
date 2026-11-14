@@ -1,18 +1,11 @@
 #![no_std]
 #![no_main]
 
-use defmt_rtt as _;
-use embassy_executor::Spawner;
-use embassy_rp::{
-    Peri,
-    gpio::{Input, Level, Output, Pull},
-    peripherals::{PIN_15, PIN_25},
-};
-use embassy_time::Timer;
-use panic_probe as _;
+mod button;
 
-#[embassy_executor::task]
-async fn blink_led(mut button: Input<'static>, mut led: Output<'static>) {
+use interface::Input;
+
+async fn blink_led(mut button: Button, mut led: Output<'static>) {
     led.set_inversion(true);
 
     let mut state = button.get_level();
@@ -44,7 +37,6 @@ async fn blink_led(mut button: Input<'static>, mut led: Output<'static>) {
     }
 }
 
-#[embassy_executor::main]
 async fn main(spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
