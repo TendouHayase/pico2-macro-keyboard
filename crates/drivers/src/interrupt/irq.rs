@@ -1,5 +1,3 @@
-use interface::{Error, ErrorKind};
-
 pub const IRQ_COUNT: usize = 52;
 
 #[repr(u8)]
@@ -176,9 +174,3 @@ impl TryFrom<u8> for Irq {
 /// The value is not a valid RP2350 IRQ number.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct InvalidIrq(pub u8);
-
-impl Error for InvalidIrq {
-    fn kind(&self) -> ErrorKind {
-        ErrorKind::Other
-    }
-}

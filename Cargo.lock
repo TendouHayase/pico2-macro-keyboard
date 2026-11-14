@@ -3,8 +3,16 @@
 version = 4
 
 [[package]]
-name = "interface"
+name = "firmware"
 version = "0.1.0"
 dependencies = [
- "interface",
+ "rp2350-drivers",
 ]
+
+[[package]]
+name = "rp2350-drivers"
+version = "0.1.0"
+
+[[package]]
+name = "rp2350-rt"
+version = "0.1.0"

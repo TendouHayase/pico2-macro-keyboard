@@ -9,4 +9,3 @@ bench = false
 doctest = false
 
 [dependencies]
-interface = { path = "../../crates/interface" }

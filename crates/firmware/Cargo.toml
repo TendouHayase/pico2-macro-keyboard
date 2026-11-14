@@ -10,5 +10,4 @@ test = false
 bench = false
 
 [dependencies]
-interface = { path = "../../crates/interface" }
 rp2350-drivers = { path = "../drivers" }
