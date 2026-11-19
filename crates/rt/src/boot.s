@@ -14,6 +14,13 @@
 
 .thumb_func
 Reset:
+_enable_fpu:
+    ldr r0, =0xE000ED88
+    ldr r1, [r0]
+    orr r1, #(0xF << 20)
+    str r1, [r0]
+    dsb
+    isb
 
 _init_bss:
     movs r2, #0
