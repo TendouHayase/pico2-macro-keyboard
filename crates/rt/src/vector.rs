@@ -40,3 +40,8 @@ pub static EXCEPTIONS: [Vector; 14] = [
     Vector { handler: PendSV },
     Vector { handler: SysTick },
 ];
+
+#[unsafe(no_mangle)]
+pub extern "C" fn DefaultExceptionHandler() {
+    panic!();
+}
