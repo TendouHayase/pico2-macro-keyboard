@@ -9,4 +9,5 @@ bench = false
 doctest = false
 
 [[test]]
+name = "boot"
 harness = false
