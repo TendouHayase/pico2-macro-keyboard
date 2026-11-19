@@ -7,3 +7,6 @@ edition = "2024"
 test = false
 bench = false
 doctest = false
+
+[[test]]
+harness = false
