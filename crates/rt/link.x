@@ -8,40 +8,74 @@ MEMORY {
     SRAM5 : ORIGIN = 0x20081000, LENGTH = 4K
 }
 
+ENTRY(Reset);
+
+EXTERN(RESET_VECTOR);
+EXTERN(EXCEPTIONS);
+EXTERN(IRQS)
+EXTERN(IMAGE_DEF);
+
 SECTIONS {
-    .vector_table : ALIGH(4) {
-        __start_vector_table = .;
-        KEEP(*(.vector_table));
-    } > FLASH
+  .vector_table ORIGIN(FLASH) : 
+  {
+    LONG(ORIGIN(RAM) + LENGTH(RAM));
+    KEEP(*(.vector_table.reset_vector));
+    KEEP(*(.vector_table.exceptions));
+    KEEP(*(.vector_table.irqs))
+  } > FLASH
+
+  .text :
+  {
+    *(.text .text.*);
+  } > FLASH
+
+  .rodata :
+  {
+    *(.rodata .rodata.*);
+  } > FLASH
+
+  .bss : ALIGN(4)
+  {
+    _sbss = .;
+    *(.bss .bss.*);
+    _ebss = .;
+  } > RAM
+
+  .data : AT(ADDR(.rodata) + SIZEOF(.rodata))
+  {
+    _sdata = .;
+    *(.data .data.*);
+     . = ALIGN(4);
+    _edata = .;
+  } > RAM
+
+  _sidata = LOADADDR(.data);
+
+  /DISCARD/ : 
+  {
+    *(.ARM.exidx .ARM.exidx.*);
+  }
 }
 
 SECTIONS {
-    .start_block : ALIGN(4) {
-        __start_block_addr = .;
-        KEEP(*(_start_block));
-        KEEP(*(.boot_info));
-    } > FLASH
+  .image_def : ALIGN(4) {
+    __image_def_addr = .;
+    KEEP(*(.image_def));
+  } > FLASH
 } INSERT AFTER .vector_table;
 
 
-_stext = ADDR(.start_block) + SIZEOF(.start_block);
-
-/* picotool 용 'binary info' 엔트리 */
-SECTIONS {
-    .bi_entries : ALIGN(4) {
-        __bi_entries_start = .;
-        KEEP(*(.bi_entries));
-        . = ALIGN(4);
-        __bi_entries_end = .;
-    } > FLASH
-} INSERT AFTER .text;
-
-SECTIONS {
-    .end_block : ALIGN(4) {
-        __end_block_addr = .;
-        KEEP(*(.end_block));
-    } > FLASH
-} INSERT AFTER .uninit;
+_stext = ADDR(.image_def) + SIZEOF(.image_def);
 
 PROVIDE(start_to_end = __end_block_addr - __start_block_addr);
 PROVIDE(end_to_start = __start_block_addr - __end_block_addr);
+PROVIDE(NMI = DefaultExceptionHandler);
+PROVIDE(HardFault = DefaultExceptionHandler);
+PROVIDE(MemManage = DefaultExceptionHandler);
+PROVIDE(BusFault = DefaultExceptionHandler);
+PROVIDE(UsageFault = DefaultExceptionHandler);
+PROVIDE(SecureFault = DefaultExceptionHandler);
+PROVIDE(SVCall = DefaultExceptionHandler);
+PROVIDE(DebugMonitor = DefaultExceptionHandler);
+PROVIDE(PendSV = DefaultExceptionHandler);
+PROVIDE(SysTick = DefaultExceptionHandler);
