@@ -75,7 +75,7 @@ unsafe impl Sync for IrqHandlerTable {}
 /// # Safety
 /// Must only be entered by hardware through an IRQ vector entry (exception number
 /// 16 or above) on core 0. Never call it directly from software.
-#[unsafe(no_mangle)]
+#[unsafe(export_name = "Dispatch")]
 unsafe extern "C" fn dispatch() {
     let ipsr = crate::register::ipsr::read();
 
